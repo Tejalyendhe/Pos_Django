@@ -1,0 +1,200 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %} {% block title %}
+Dashboard {% endblock %} {% block content %}
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+      </ol>
+    </nav>
+  </div>
+  <!-- End Page Title -->
+
+  <section class="section dashboard">
+    <div class="row">
+      <!-- Left side columns -->
+      <div class="col-lg-12">
+        <div class="row">
+          <!--  -->
+          <div class="col-xxl-4 col-md-6">
+            <a href="{% url 'generate_bill'%}">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title"></h5>
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-building"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>Generate Bill</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-xxl-4 col-md-6">
+            <a href="{% url 'view_bill'%}">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title"></h5>
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-view-list"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>View Bill</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-xxl-4 col-md-6">
+            <a href="{% url 'search_barcode'%}">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title"></h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-upc-scan"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>Search Barcode</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End  -->
+          {% if user.usertype.user_type == 'ADMIN' %}
+
+            <!-- Revenue Card -->
+            <div class="col-xxl-4 col-md-6">
+              <a href="{% url 'search_supplier'%}">
+                <div class="card info-card sales-card">
+                  <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-person-lines-fill"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6>Search Supplier</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <!--  -->
+
+            <!-- Customers Card -->
+            <div class="col-xxl-4 col-md-6">
+              <a href="{% url 'update_price'%}">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title"></h5>
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-currency-rupee"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>Update Price</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+            </div>
+
+            <!-- Reports -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title"></h5>
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-tag"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>View Master Input</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--  -->
+
+            <!--  -->
+            <div class="col-xxl-4 col-md-6">
+              <a href="{% url 'analysis'%}">
+
+                <div class="card info-card sales-card">
+                  <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-bar-chart-line"></i>
+                      </div>
+                      <div class="ps-3">
+                        <h6>Analysis</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <!--  -->
+          {% endif %}
+
+          <!--  -->
+          <div class="col-xxl-4 col-md-6">
+            <a href="{% url 'take_pic'%}">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title"></h5>
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-camera"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6>Take Pic</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+          </div>
+          <!--  -->
+          <!--  -->
+          <div class="col-xxl-4 col-md-6">
+            <a href="{% url 'report'%}">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title"></h5>
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-camera"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>Report</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <!--  -->
+        </div>
+      </div>
+      <!-- End Left side columns -->
+    </div>
+  </section>
+</main>
+<!-- End #main -->
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+CityWise Analysis
+{% endblock %}
+{% block content %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>City-Wise Analysis</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'analysis'%}">analysis</a></li>
+                <li class="breadcrumb-item active"><a href="{% url 'city-wise-analysis'%}">city-wise analysis</a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        City-Wise Table
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>City name</th>
+                                        <th>Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in table_data %}
+                                    <tr>
+                                        <td>{{ item.uniqueNumber }}</td>
+                                        <td>{{ item.qty }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Item-Wise Quantity Analysis
+                    </div>
+                    <div class="card-body">
+                        <canvas id="itemWiseChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+{% endblock %}

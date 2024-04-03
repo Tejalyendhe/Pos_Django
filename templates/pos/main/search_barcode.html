@@ -1,0 +1,33 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+View Bill
+{% endblock %}
+{% block content %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Search barcode</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="{% url 'view_bill'%}">search barcode</a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <!-- Filter Section -->
+            <div class="col-md-12 mb-3">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="filterInput" placeholder="search">
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+{% endblock %}

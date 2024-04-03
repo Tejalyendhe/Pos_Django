@@ -1,0 +1,49 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+View Invoice
+{% endblock %}
+{% block content %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="//cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js" defer></script>
+<link href="{% static 'pos/css/report.css' %}" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/danfojs@1.1.2/lib/bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+
+
+
+<main id="main" class="main">
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body m-3">
+            <button id="download-excel-button" class="btn btn-primary mb-3"><i class="bi bi-download"></i></button>
+            <!-- report Table -->
+            <div class="table-responsive">
+              <!-- Loader element -->
+              <div id="table-loader" class="loader"></div>
+
+              <table id="inv_table" class="table table-sm table-hover" style="padding: 0 !important;">
+                <thead>
+
+                </thead>
+                <tbody>
+                  <!-- Empty tbody for data loading -->
+                </tbody>
+              </table>
+            </div>
+            <!-- End report Table  -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="{% static 'pos/js/invoice.js' %}"></script>
+
+{% endblock %}

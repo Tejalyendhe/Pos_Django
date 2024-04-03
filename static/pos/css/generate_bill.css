@@ -1,0 +1,95 @@
+    .card {
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.11), 0 2px 2px rgba(0, 0, 0, 0.11), 0 4px 4px rgba(0, 0, 0, 0.11), 0 6px 8px rgba(0, 0, 0, 0.11), 0 8px 16px rgba(0, 0, 0, 0.11);
+    }
+
+    .discount-radio {
+        opacity: 0;
+        width: 100%;
+        height: 42px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .payment-button {
+        opacity: 100;
+        /* display: contents; */
+        z-index: 0;
+        border: 0px solid #CCC;
+    }
+
+    .group {
+        display: flex;
+    }
+
+    .input-container {
+        height: 42px;
+        width: 100%;
+        line-height: 42px;
+        text-align: center;
+        position: relative;
+    }
+
+    .input-container:first-child .discount-label {
+        border-radius: 5px 0 0 5px;
+    }
+
+    .input-container:last-child .discount-label {
+        border-radius: 0 5px 5px 0;
+        border-right: 2px solid #CCC;
+    }
+
+    .discount-label {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        border: 2px solid #CCC;
+        border-right: inherit;
+        top: 0;
+        left: 0;
+        font-family: arial;
+        color: #737373;
+    }
+
+    .discount-radio:checked+.discount-label {
+        background-color: #5AB8AB;
+        top: 0;
+        left: 0;
+        border: 2px solid #3F9188 !important;
+        z-index: 2;
+        color: white;
+    }
+
+    .fixed-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: auto;
+        width: 100%;
+        background-color: #f8f9fa;
+        /* Set your preferred background color */
+        padding: 10px;
+        text-align: center;
+        border-top: 1px solid #dee2e6;
+        /* Add a border to separate it from the content above */
+
+        /* Flexbox styling for responsiveness */
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .fixed-footer button {
+        margin: 5px;
+        background: #5AB8AB;
+        border: #3F9188;
+        /* Add some spacing between buttons */
+    }
+
+
+    /* Media query for smaller screens (adjust the max-width as needed) */
+    @media (max-width: 767px) {
+        .fixed-footer {
+            position: relative;
+            /* Change to relative for smaller screens */
+        }
+    }

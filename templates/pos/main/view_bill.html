@@ -1,0 +1,63 @@
+view_Bill.html
+
+          {% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+View Bill
+{% endblock %}
+{% block content %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>View Bill</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="{% url 'view_bill'%}">view bill</a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <!-- Filter Section -->
+            <div class="col-md-12 mb-3">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="filterInput" placeholder="search">
+                </div>
+            </div>
+
+            <!-- Sale Data Cards -->
+            {% for sale_item in sale_data %}
+            <div class="col-md-4 mb-0">
+                <a href="{% url 'bill_print' sale_item.saleNumber  %}">
+                <div class="card" style="box-shadow: inset 0 0 5px 1px #8e8686;">
+                    <div class="card-body">
+                        <h5 class="card-title">Sale Number: {{ sale_item.saleNumber }}</h5>
+                        <p class="card-text">Store Name: {{ sale_item.storeName }}</p>
+                        <p class="card-text">Sales Created Date: {{ sale_item.salesCreatedDate }}</p>
+                        <!-- Add other fields as needed -->
+                    </div>
+                </div>
+            </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+
+<script>
+    // Client-side filter logic
+    document.getElementById('filterInput').addEventListener('input', function () {
+        var filterText = this.value.toLowerCase();
+        var cards = document.querySelectorAll('.card');
+
+        cards.forEach(function (card) {
+            var cardText = card.textContent.toLowerCase();
+            card.style.display = cardText.includes(filterText) ? 'block' : 'none';
+        });
+    });
+</script>
+
+{% endblock %}

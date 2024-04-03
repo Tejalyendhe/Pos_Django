@@ -1,0 +1,84 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+View Product
+{% endblock %}
+{% block content %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="//cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js" defer></script>
+
+<main id="main" class="main">
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body m-3">
+            <!-- Default Table -->
+            <div class="table-responsive">
+              <table id="product_table" class="table table-sm table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">Sr.no</th>
+                    <th scope="col">Unq No.</th>
+                    <th scope="col">Prd Name</th>
+                    <th scope="col">Supplier</th>
+                    <th scope="col">Headline</th>
+                    <th scope="col">Desc 1</th>
+                    <th scope="col">Desc 2</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Label</th>
+                    <th scope="col">Packed Qty</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Return Qty</th>
+                    <th scope="col">Carton_No</th>
+                    <th scope="col">Invoice_No</th>
+                    <th scope="col">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for data in table_data %}
+                  {% if data.greturn > 0 or data.Qty > 0 %}
+                  <tr class="table-warning">
+                    {% else %}
+                  <tr>
+                    {% endif %}
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ data.Unique_no }}</td>
+                    <td>{{ data.Product_name }}</td>
+                    <td>{{ data.supplier }}</td>
+                    <td>{{ data.Headline }}</td>
+                    <td>{{ data.Description }}</td>
+                    <td>{{ data.Description_2 }}</td>
+                    <td>{{ data.Type }}</td>
+                    <td>{{ data.Cipher }}</td>
+                    <td>{{ data.packed_quantity }}</td>
+                    <td>{{ data.Qty }}</td>
+                    <td>{{ data.greturn }}</td>
+                    <td>{{ data.Carton_No }}</td>
+                    <td>{{ data.Invoice_No }}</td>
+                    <td>{{ data.created_date|date:"Y-m-d" }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+
+              </table>
+            </div>
+            <!-- End Default Table Example -->
+          </div>
+        </div>
+</main>
+
+
+<script>
+  $(document).ready(function () {
+    var table = $('#product_table').DataTable({
+      searching: true,
+      paging: true,
+      pageLength: 50,
+    });
+
+  });
+</script>
+
+{% endblock %}

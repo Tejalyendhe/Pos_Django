@@ -1,0 +1,79 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+SupplierWise Analysis
+{% endblock %}
+{% block content %}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Supplier-Wise Analysis</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'analysis'%}">analysis</a></li>
+                <li class="breadcrumb-item active"><a href="{% url 'supplier-wise-analysis'%}">supplier-wise analysis</a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Supplier-wise Table
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Supplier name</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in table_data %}
+                                        <tr>
+                                            <td>{{ item.supplier }}</td>
+                                            <td>{{ item.qty }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+           
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Supplier-Wise Quantity Analysis
+                    </div>
+                    <div class="card-body">
+                        <canvas id="supplierWiseChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('supplierWiseChart').getContext('2d');
+    var datasets = {{ datasets|safe }};
+    var labels = {{ labels|safe }};
+
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: datasets,
+        },
+    });
+</script>
+{% endblock %}

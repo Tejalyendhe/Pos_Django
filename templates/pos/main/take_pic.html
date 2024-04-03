@@ -1,0 +1,76 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+View Bill
+{% endblock %}
+{% block content %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Take Pic</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="{% url 'take_pic'%}">take pic</a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+     <!-- Add the video element for camera feed -->
+     <video id="camera-feed" width="100%" height="auto"></video>
+     <!-- Add the paragraph element for scanned result -->
+     <p id="scanned-result"></p>
+ 
+</main>
+
+<!-- Include the library -->
+<script src="{% static 'path/to/zxing.js' %}"></script>
+
+<script>
+    // Initialize the camera
+    const video = document.getElementById('camera-feed');
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(error => {
+            console.error('Error initializing camera:', error);
+        });
+
+
+    // Use the barcode/QR code scanner library
+    const codeReader = new ZXing.BrowserMultiFormatReader();
+    codeReader.decodeFromVideoDevice(undefined, 'camera-feed', (result, err) => {
+        if (result) {
+            // Send the scanned data to the Django server using AJAX
+            const scannedResult = result.text;
+            document.getElementById('scanned-result').innerText = scannedResult;
+
+            // Send the scanned data to the Django server using AJAX
+            // Implement the AJAX code here to send the scanned data to the Django server
+        }
+        if (err) {
+            console.error(err);
+        }
+    });
+</script>
+
+<script>
+    // Send the scanned data to the Django server using AJAX
+const scannedResult = result.text;
+
+// Implement the AJAX code here to send the scanned data to the Django server
+fetch('/handle_scanned_data/?scanned_data=' + scannedResult)
+    .then(response => response.json())
+    .then(data => {
+        console.log('Server response:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+</script>
+
+
+{% endblock %}

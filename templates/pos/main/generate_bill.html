@@ -1,0 +1,188 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+Generate Bill
+{% endblock %}
+{% block content %}
+
+<link href="{% static 'pos/css/generate_bill.css'%}" rel="stylesheet" />
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+<main id="main" class="main">
+    <section class="section" id="bill-section-1">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body m-3">
+                        <!-- Default Table -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0 border-bottom border-top">Bill Items</h4>
+                            <button type="button" class="btn btn-primary" id="add-row">+</button>
+                        </div>
+
+                        <form method="post" id="bill_form" action="">
+                            {% csrf_token %}
+                            <div class="table-responsive">
+                                <table class="table" id="bill-items-table">
+                                    <thead>
+                                        <tr>
+                                            <th></th> 
+                                            <th>Barcode</th>
+                                            <th>Item</th>
+                                            <th>Qty</th>
+                                            <th>Code</th>
+                                            <th>Rate</th>
+                                            <th>Total</th>
+                                            <th>No Exhange/No Refund</th>    
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="item-row">
+                                            <td class="srno">1</td> <!-- Initial serial number -->
+                                            <td><input type="text" name="barcode[]" class="form-control"
+                                                    oninput="fetchDispatchData(this)" /></td>
+                                            <td><input type="text" name="item[]" class="form-control" disabled /></td>
+                                            <td><input type="number" name="qty[]" oninput="calculateTotal()" step="1" 
+                                                    class="form-control" />
+                                            </td>
+                                            <td><input type="text" name="code[]" class="form-control-plaintext"
+                                                    disabled />
+                                            </td>
+                                            <td><input type="number" name="rate[]" oninput="calculateTotal()" step="1" 
+                                                    class="form-control" />
+                                            </td>
+                                            <td><input type="text" name="total[]" disabled class="form-control" /></td>
+                                            <td><input type="checkbox" name="noExhangeRefund[]" onclick="updateExchangeRefund(this)" class="form-check-input" />
+                                            </td>
+                                            <td> <button type="button" class="btn btn-danger" onclick="deleteRow(this.parentNode.parentNode)">x</button>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- <input type="submit" class="btn btn-success" value="Submit" /> -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="fixed-footer border-top">
+                    <div class="d-flex align-items-center">
+                        <span>Add Item without Label:</span>
+                        <input list="itemList" class="form-control" id="itemInput" placeholder="Select an item">
+                        <datalist id="itemList">
+                            {% for item in items %}
+                            <option value="{{item.code}}"  data-item="{{item.item}}" data-code="{{item.code}}" data-qty="{{item.default_qty}}" data-rate="{{item.default_rate}}">
+                            {% endfor %}
+                        </datalist>                        
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body m-3 border-bottom border-top">
+                        <div class="d-flex" style="flex-wrap: wrap;justify-content: space-between;align-items: center;">
+                            <h4 class="mb-3 border-bottom border-top">Total</h4>
+                            <strong id="grand_total" style="font-size: x-large;">£ 0.0</strong>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <div class="group">
+                                <!-- alter by sarvesh 05-01-23 -->
+                                {% for discount in discounts %}
+                                <div class="input-container">
+                                    <input type="radio" id="{{discount.discount_name}}" name="discount" onclick="calculateTotal()"
+                                        value="{{discount.discount_value}}" class="discount-radio" {% if discount.position == 0 %} checked {% endif %} />
+                                    <label for="{{discount.discount_name}}" class="discount-label">{{ discount.discount_icon|safe }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="mb-3">
+                            <div class="group">
+                                <div class="input-container">
+                                    <input class="discount-radio payment-button" type="button"  name="paymentMethod" id="card" trigger="0" onclick="paymentToggle('cardInput', this)">
+                                    <label class="discount-label" for="card" style="font-weight: bold;font-family: Verdana, Geneva, Tahoma, sans-serif;">Card</label>
+                                </div>
+                                <div class="input-container">
+                                    <input class="discount-radio payment-button" type="button" name="paymentMethod"
+                                        id="cash" trigger="0" onclick="paymentToggle('cashInput',this)">
+                                    <label class="discount-label" for="cash" style="font-weight: bold;font-family: Verdana, Geneva, Tahoma, sans-serif;" >Cash</label>
+                                </div>
+                                <div class="input-container">
+                                    <input class="discount-radio payment-button" type="button" name="paymentMethod"
+                                        id="points" trigger="0" onclick="paymentToggle('pointsInput',this)">
+                                    <label class="discount-label" for="points" style="font-weight: bold;font-family: Verdana, Geneva, Tahoma, sans-serif;">Points</label>
+                                </div>
+                            </div>
+                            <div class="mt-3 payment-inputs" style="display: block;">
+                                <input id="cardInput" oninput="calculateTotal()" type="number"
+                                    class="form-control mt-2 payment-input" placeholder="Enter Card Amount" style="border: 2px solid #808080;  padding: 10px;"/>
+                                <input id="cashInput" type="number" oninput="calculateTotal()"
+                                    class="form-control mt-2 payment-input"  placeholder="Enter Cash Amount" style="border: 2px solid #808080;  padding: 10px;" />
+                                <input id="pointsInput" type="number" oninput="calculateTotal()"
+                                    class="form-control mt-2 payment-input"  placeholder="Enter Points" style="border: 2px solid #808080;  padding: 10px;"/>
+                            </div>
+                        </div>
+                    
+                        <hr>
+                        <div class="mb-3">
+                            <strong>Balance:</strong> <strong id="balance" style="font-size: x-large;">£ 0.0</strong>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="noExchangeRefund" onclick="updateExchangeRefund()">
+                                <label class="form-check-label" for="noExchangeRefund">No Exchange/No Refund</label>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <div class="mb-3">
+                            <div class="row row-cols-3 gx-2 gy-2 d-none d-md-flex" id="calculatorButtons">
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">1</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">2</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">3</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">4</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">5</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">6</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">7</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">8</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">9</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">.</button></div>
+                                <div class="col"><button type="button" class="btn btn-secondary w-100">0</button></div>
+                                <div class="col"><button type="button" class="btn btn-danger w-100">x</button></div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <button type="button" id="form_submit" class="btn btn-primary w-100">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<script src="{% static 'pos/js/generate_bill.js' %}"></script>
+<script>
+
+
+    // Your Selectize initialization code here
+    $('#itemInput').selectize({
+        options: $('#itemList option').map(function () {
+            return { value: this.value, text: this.value };
+        }).get(),
+        create: false,
+        sortField: 'text'
+    });
+
+
+
+</script>
+{% endblock %}

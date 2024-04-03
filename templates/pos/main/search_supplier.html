@@ -1,0 +1,68 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+Search Supplier
+{% endblock %}
+{% block content %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Search Supplier</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="{% url 'search_supplier'%}">Search Supplier</a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <!-- Filter Section -->
+            <div class="col-md-12 mb-3">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="filterSup" placeholder="Search">
+                </div>
+            </div>
+    
+            <!-- Sale Data Table -->
+            <div class="col-md-12 mb-4">
+                <table class="table" id="supplierTable">
+                    <thead>
+                        <tr>
+                            <th>Supplier Name</th>
+                            <th>Supplier Code</th>
+                            <th>Contact</th>
+                            <th>City</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sup in supno %}
+                        <tr class="supplier-row">
+                            <td>{{ sup.name }}</td>
+                            <td>{{ sup.supplier_code }}</td>
+                            <td>{{ sup.mobile_no_1 }}</td>
+                            <td>{{ sup.city }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    </main>
+    
+    <script>
+        document.getElementById('filterSup').addEventListener('input', function () {
+            var filterText = this.value.toLowerCase();
+            var rows = document.querySelectorAll('.supplier-row');
+    
+            rows.forEach(function (row) {
+                var rowText = row.textContent.toLowerCase();
+                row.style.display = rowText.includes(filterText) ? 'table-row' : 'none';
+            });
+        });
+    </script>
+    
+{% endblock %}

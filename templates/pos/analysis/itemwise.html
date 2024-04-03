@@ -1,0 +1,106 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+ItemWise Analysis
+{% endblock %}
+{% block content %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Item-Wise Analysis</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'analysis'%}">analysis</a></li>
+                <li class="breadcrumb-item active"><a href="{% url 'item-wise-analysis'%}">item-wise analysis</a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Item-Wise Table
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Total £</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in table_data %}
+                                    <tr {% if item.title != '' %}  onclick="window.location.href='{% url 'item-wise-data' item=item.title %}'" {% endif %}
+                                        style="cursor: pointer;">
+                                        <td>  {% if item.title != '' %}{{ item.title }}{% else %} N/A {% endif %}</td>
+                                        <td>{{ item.qty }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Analysis
+                    </div>
+                    <div class="card-body">
+                        <canvas id="itemWiseChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="{% static 'pos/js/analysis.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get data from the server or use the data you have
+        var ctx = document.getElementById('itemWiseChart').getContext('2d');
+
+        // Prepare datasets with random colors in JavaScript
+        {{ datasets | safe }}.forEach(function (dataset) {
+            dataset['borderColor'] = getRandomColor();
+            dataset['backgroundColor'] = transparentize(dataset['borderColor'], 0.5);
+            dataset['tension'] = 0.4;
+        });
+
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ labels| safe }},
+        datasets: {{ datasets| safe }},
+        },
+        options: {
+        responsive: true,
+        animations: {
+      radius: {
+        duration: 600,
+        easing: 'easeInOutBounce',
+       
+      }
+        },
+        hoverRadius: 12,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+    });
+});
+
+</script>
+
+
+{% endblock %}

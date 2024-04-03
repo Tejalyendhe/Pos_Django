@@ -1,0 +1,110 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+ItemWise Data
+{% endblock %}
+{% block content %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>StoreWise Analysis</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'analysis'%}">analysis</a></li>
+                <li class="breadcrumb-item "><a href="{% url 'item-wise-analysis'%}">item-wise analysis</a></li>
+                <li class="breadcrumb-item active"><a href="">store-wise data</a></li>
+
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Item/Store-Wise Table
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Store</th>
+                                        <th>SaleNo</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in table_data %}
+                                    <tr>
+                                        <td>{{ item.storeName }}</td>
+                                        <td>{{ item.saleNo }}</td>
+                                        <td>{{ item.total }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        StoreWise Quantity Analysis
+                    </div>
+                    <div class="card-body">
+                        <canvas id="itemWiseChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="{% static 'pos/js/analysis.js' %}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get data from the server or use the data you have
+        var labels = {{ labels|safe }};
+        var data = {{ data|safe }};
+
+        var ctx = document.getElementById('itemWiseChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Quantity',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                animations: {
+                radius: {
+                    duration: 600,
+                    easing: 'easeInOutBounce',
+                
+                    }
+                },
+                hoverRadius: 12,
+                maintainAspectRatio: false, // Set to false for responsiveness
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

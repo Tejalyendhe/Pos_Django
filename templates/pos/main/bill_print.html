@@ -1,0 +1,262 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+Bill Print
+{% endblock %}
+{% block content %}
+<link href="{% static 'pos/css/bill_print.css'%}" rel="stylesheet" />
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org//face/avara" type="text/css" />
+<link href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/jsbarcode/3.6.0/JsBarcode.all.min.js"></script>
+<style>
+    @page {
+        size: A5 landscape;
+        margin: 0;
+        padding: 0;
+        transform: scale(0.6);
+    }
+</style>
+<style>
+    @media print {
+        @page {
+            size: A5 landscape;
+            margin: 0;
+            padding: 0;
+            transform: scale(0.6);
+            /* 60% scale */
+        }
+        
+    }
+</style>
+<style>
+    @media print {
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .receipt_header {
+            margin-top: 0;
+        }
+    }
+</style>
+
+<style>
+    .left {
+        float: left;
+    }
+
+    .no-border {
+        border: none;
+    }
+
+    .no-margin-padding {
+        margin: 0;
+        padding: 0;
+    }
+
+    .right-align {
+        text-align: right;
+    }
+
+    .nested-row {
+        float: right; 
+    }
+
+    .nested-row p {
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+</style>
+
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Bill Print</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'generate_bill'%}">generate bill</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'view_bill'%}">view bill</a></li>
+                <li class="breadcrumb-item active"><a href="">print bill</a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+    <section class="section dashboard">
+        <button id="printButton" onclick="printBill()">Print Bill</button>
+        <!-- Add new button for going back to generate bill -->
+        <button id="backToGenerateBill" onclick="goBackToGenerateBill()" style="float: right;">Back to Generate
+            Bill</button>
+        <div class="container">
+
+            <div class="receipt_header" style="margin-top: 0; padding-top: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="width: 50%;height: 15%;">
+                        {% if sale_data.storeName == 'SHRI VENILALS' %}
+                        <img src="{% static 'pos/images/Venilals.png' %}" style="height: 15%; width: 85%;"
+                            alt="storelogo">
+                        {% elif sale_data.storeName == 'HERITAGE' %}
+                        <img src="{% static 'pos/images/Heritage.png' %}" style="height: 20vh; width: 80%;"
+                            alt="storelogo">
+                        {% elif sale_data.storeName == 'CELEBRATIONS' %}
+                        <img src="{% static 'pos/images/Celebrations.png' %}" style="height: 15%;  width: 85%;"
+                            alt="storelogo">
+                        {% elif sale_data.storeName == 'FESTIVAL' %}
+                        <img src="{% static 'pos/images/Festival.png' %}" style="height: 25%; width: 90%;"
+                            alt="storelogo">
+                        {% else %}
+                        <p>no logo available !</p>
+                        {% endif %}
+                    </div>
+
+                    <div style="width: 60%;">
+                        <h1 style="font-size: 40px;  font-family: 'Averia Serif Libre', serif;">
+                            {{sale_data.storeName}}
+                            <small style="font-size: 16px;">uk</small>
+                        </h1>
+
+                        {% if sale_data.storeName == 'SHRI VENILALS' %}
+                        <h2>115,117 Ealing Road, Wembley, Middlesex, London - HA0 4BP <span>Tel: 020 8903 3144</span>
+                        </h2>
+                        {% elif sale_data.storeName == 'HERITAGE' %}
+                        <h2>97 Ealing Road, Wembley, Middlesex, London - HA0 4BP <span>Tel: 020 8795 3051</span></h2>
+                        {% elif sale_data.storeName == 'CELEBRATIONS' %}
+                        <h2>99/103 Ealing Road, Wembley, Middlesex, London - HA0 4BP <span>Tel: 020 8795 3051</span>
+                        </h2>
+                        {% elif sale_data.storeName == 'FESTIVAL' %}
+                        <h2>198 Ealing Road, Wembley, Middlesex, London - HA0 4BP <span>Tel: 020 8900 0313</span></h2>
+                        {% else %}
+                        <p>no address available !</p>
+                        {% endif %}
+                    </div>
+                    
+                </div>
+                
+                <div style="float: right;font-weight: bold;">{{ sale_data.salesCreatedDate | date:'F j, Y' }}</div>
+            </div>
+
+            <div class="receipt_body">
+                
+                <div class="items">
+                    <table>
+                        <thead>
+                            <th>DESCRIPTION</th>
+                            <th>QTY</th>
+                            <th>PRICE</th>
+                            <th>SALE PRICE</th>
+                        </thead>
+                        <tbody>
+                            {% for sale_item in sale_items %}
+                            <tr>
+                                <td>{{ sale_item.headline }}</td>
+                                <td>{{ sale_item.rowQty }}</td>
+                                <td>{{ sale_item.rowRate|floatformat:2 }}</td>
+                                <td>£ {{ sale_item.rowTotal|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                        <tfoot>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <div style="text-align: left; margin-left: 10px; text-size-adjust:x-small ;">
+                                            <small>
+                                                Thanks you for your Custom,
+                                                Goods Will Not Be Exchanged <br>If Labels Are Removed.
+                                                All Goods Sold As Seen, No Guarantee for Colour,<br> Jari & Fabric.
+                                                No Refund, All Exchanges within 14 Days<br> Only at Sale Price or Lowest
+                                                Price<br>(Do Not Remove the TAGS)
+                                            </small>
+                                        </div>
+                                    </td>                                        
+                                <td class="no-border no-margin-padding right-align">
+                                    <h4 style="font-weight: bold;">TOTAL : £ {{sale_data.saleTotal|floatformat:2}}</h4>
+                                    <div class="nested-row">
+                                        {% if sale_data.saleCash %}
+                                        <p>Cash : £ {{sale_data.saleCash}}</p>
+                                        {% endif %}
+                                        {% if sale_data.saleCard %}
+                                        <p>Card : £ {{sale_data.saleCard}}</p>
+                                        {% endif %}
+                                        {% if sale_data.salePoints %}
+                                        <p>Points : £ {{sale_data.salePoints}}</p>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                        </tr>
+                    </table>
+                </tfoot>
+
+                </div>
+            </div>
+            <hr>
+            <tfoot>
+                <div style="float: left;">Stay connected with us! Follow us on social media for the latest updates.</div>
+                <div class="social_media" style="float: right;">
+                    <img src="{% static 'pos/images/insta.jpg' %}" style="height: 4%; width: 4%;" alt="Instagram">
+                    &nbsp;&nbsp;
+                    <img src="{% static 'pos/images/tiktok.jpg' %}" style="height: 4%; width: 4%;" alt="TikTok">
+                    &nbsp;&nbsp;
+                    <img src="{% static 'pos/images/fb.jpg' %}" style="height: 4%; width: 4%;" alt="Facebook">
+                    &nbsp;&nbsp;
+                    <!-- Additional tags -->
+                    <span id="saleNumber" style="display: none;">{{ sale_data.saleNumber }}</span>
+                    <img id="barcodeImage" style="width: 100px; height: auto;">
+                </div>
+            </tfoot>
+
+
+
+            {% if sale_data.isNotExchange == 'on' %}
+            <h5
+                style="font-size:x-small;font-family:Verdana, Geneva, Tahoma, sans-serif;letter-spacing: 1px;margin: 0;font-weight:bold;">
+                No Exchange/No Refund on </h5>
+            {% endif %}
+
+            <hr>
+        </div>
+        <center>
+            </div>
+            </div>
+            </div>
+            </div>
+    </section>
+
+
+
+</main>
+<script src="{% static 'pos/js/generate_bill.js' %}"></script>
+
+<script>
+    function printBill() {
+        // Hide the print button before printing
+        var printButton = document.getElementById('printButton');
+        var backButton = document.getElementById('backToGenerateBill');
+        printButton.style.display = 'none';
+        backButton.style.display = 'none';
+
+        // Print the bill
+        window.print();
+
+        // Show the print button after printing
+        printButton.style.display = '';
+        backButton.style.display = '';
+    }
+    // Function to go back to the generate bill page
+    function goBackToGenerateBill() {
+        window.location.href = "{% url 'generate_bill'%}";
+    }   
+</script>
+<script>
+    // Get the sale number from the hidden span
+    var saleNumber = document.getElementById('saleNumber').textContent;
+
+    // Generate the barcode and set it as the image source
+    JsBarcode("#barcodeImage", saleNumber, {
+        format: "CODE128",
+        displayValue: false
+    });
+</script>
+{% endblock %}

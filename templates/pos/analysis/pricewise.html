@@ -1,0 +1,99 @@
+{% extends 'pos/partials/base.html' %}
+{% load static %}
+{% block title %}
+PriceWise Analysis
+{% endblock %}
+{% block content %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f6f9ff;
+    }
+</style>
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Price-Wise Analysis</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'analysis'%}">analysis</a></li>
+                <li class="breadcrumb-item active"><a href="{% url 'price-wise-analysis'%}">price-wise analysis</a></li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Price-Wise Table
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in price_data %}
+                                        <tr>
+                                            <td>{{ item.rowRate }}</td>
+                                            <td>{{ item.total_qty }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Price-Wise Quantity Analysis
+                    </div>
+                    <div class="card-body">
+                        <canvas id="priceChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('priceChart').getContext('2d');
+    var datasets = {{ datasets|safe }};
+    var labels = {{ labels|safe }};
+
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: datasets,
+        },
+    });
+</script>
+
+
+{% endblock %}
